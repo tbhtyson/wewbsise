@@ -1,0 +1,24 @@
+.link_but_text {
+  color: black;
+  text-decoration-line: none;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+}
+
+.paragraph {
+	
+}
+
+.padlink {
+  display: flex;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+body {
+	background-color: #fefbd8;
+
+}
