@@ -21,8 +21,18 @@
       </main>
 
       <footer class='object'>
-        Last update 3/29/2026 at 2:23 CST
+        Last update 3/29/2026 at 2:23 CST, views: <span id='view-count'></span>
       </footer>
     </div>
+    <script>
+      async function loadViews() {
+        const res = await fetch('/api/views');
+        const { views } = await res.json();
+        document.getElementById('view-count').textContent = views;
+      }
+
+      loadViews();
+    </script>
+
   </body>
 </html>
