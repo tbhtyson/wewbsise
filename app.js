@@ -4,7 +4,8 @@ const cors = require('cors');
 const fs = require('fs');
 const COUNTER_FILE = './count.json';
 const GUESTS_FILE = './guest.json';
-
+const bcrypt = require('bcrypt');
+const HASHED_PASSWORD = '$2b$10$uVvt0wxUvf56LvAPgqjkD.ucYrpIXEw5qGjze.sDjQfOQ1aex2Lym'; // paste your hash here
 // make file if nonexistent
 if (!fs.existsSync(GUESTS_FILE)) {
   fs.writeFileSync(GUESTS_FILE, '[]');
@@ -96,15 +97,22 @@ app.post('/api/entries', (req, res) => {
 
 //delete entries?
 
-app.delete("/api/entries/:id", (req, res) => {
-  const id = parseInt(req.params.id, 10);
-  const index = entries.findIndex((e) => e.id === id);
- 
-  if (index === -1) {
-    return res.status(404).json({ error: "Entry not found." });
+app.delete("/api/entries/:id", async (req, res) => {
+  const { password } = req.body;
+
+  const match = await bcrypt.compare(password, HASHED_PASSWORD);
+  if (!match) {
+    return res.status(401).json({ error: 'Incorrect password.' });
   }
- 
+
+  const id = parseInt(req.params.id, 10);
+  let entries = readEntries();
+  const index = entries.findIndex(e => e.id === id);
+
+  if (index === -1) return res.status(404).json({ error: 'Entry not found.' });
+
   entries.splice(index, 1);
+  writeEntries(entries);
   res.status(204).send();
 });
 

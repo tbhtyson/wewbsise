@@ -156,15 +156,26 @@
  
   // ── Delete entry ───────────────────────────────────────────────────────────
   async function deleteEntry(id) {
-    if (!confirm("Delete this entry?")) return;
-    try {
-      await fetch(`${API}/${id}`, { method: "DELETE" });
-      document.getElementById(`entry-${id}`)?.remove();
-      loadEntries(); // refresh count
-    } catch {
-      alert("Failed to delete entry.");
-    }
+    const password = prompt('Enter password to delete this entry:');
+  if (!password) return;
+
+  const res = await fetch(`/api/entries/${id}`, {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ password }),
+  });
+
+  if (res.status === 401) {
+    alert('Incorrect password.');
+    return;
   }
+  if (!res.ok) {
+    alert('Failed to delete entry.');
+    return;
+  }
+
+  loadEntries();
+      }
  
   // ── Init ───────────────────────────────────────────────────────────────────
   loadEntries();
