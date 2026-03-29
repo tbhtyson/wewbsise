@@ -39,6 +39,7 @@ height: max-content;
 .guestbookstuff {
 grid-row: 4 / 6;
 grid-column: 2 / 3;
+text-align: center;
 }
 
 body {

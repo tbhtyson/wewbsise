@@ -1,5 +1,14 @@
+// get and update views func
+const path = require('path');
+const cors = require('cors');
 const fs = require('fs');
 const COUNTER_FILE = './count.json';
+const GUESTS_FILE = './guest.json';
+
+// make file if nonexistent
+if (!fs.existsSync(GUESTS_FILE)) {
+  fs.writeFileSync(GUESTS_FILE, '[]');
+}
 
 function getViews() {
   try { return JSON.parse(fs.readFileSync(COUNTER_FILE)).views; }
@@ -11,23 +20,92 @@ function incrementViews() {
   return views;
 }
 
-let pageViews = getViews();
+let pageViews = getViews(); // set the view count
+
+// get reviews & such
+
+
+// Read entries from file
+function readEntries() {
+  try {
+    const content = fs.readFileSync(GUESTS_FILE, 'utf8').trim();
+    if (!content) return []; // file is empty
+    return JSON.parse(content);
+  } catch {
+    return [];
+  }
+}
+// Write entries to file
+function writeEntries(entries) {
+  fs.writeFileSync(GUESTS_FILE, JSON.stringify(entries, null, 2));
+}
+
+// boilerplate for this
 
 const express = require('express');
 
 const app = express();
 const PORT = 3000;
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// take in a get request to increase view counter
 
 app.use((req, res, next) => {
   if (req.method === 'GET' && req.path === '/') {
   incrementViews();
-  pageViews = getViews();
+  pageViews = getViews(); // so that no view count discrepancy
   }
   next();
 });
 
 app.get('/api/views', (req, res) => {
-  res.json({ views: pageViews });
+  res.json({ views: pageViews }); // mm, yes, an api JUST FOR SIMPLE ASS VIEWS
+});
+
+app.get('/api/entries', (req, res) => {
+  const entries = readEntries();
+  res.json([...entries].reverse()); // reverse ordered guestbook entries
+});
+
+// oh good god, please let this work
+
+app.post('/api/entries', (req, res) => {
+  const { name, message } = req.body;
+  if (!name || !message) { 
+    return res.status(400).json({ error: 'Name and message are required.' });
+  }
+  if (name.trim().length > 100) {
+    return res.status(400).json({ error: "Name must be 100 characters or fewer." });
+  }
+  if (message.trim().length > 500) {
+    return res.status(400).json({ error: "Message must be 500 characters or fewer." });
+  }
+  const entries = readEntries();
+  const entry = {
+    id: Date.now(), // use timestamp as ID so it's always unique
+    name: name.trim(),
+    message: message.trim(),
+    date: new Date().toISOString(),
+  };
+
+  entries.push(entry);
+  writeEntries(entries);
+  res.status(201).json(entry);
+});
+
+//delete entries?
+
+app.delete("/api/entries/:id", (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  const index = entries.findIndex((e) => e.id === id);
+ 
+  if (index === -1) {
+    return res.status(404).json({ error: "Entry not found." });
+  }
+ 
+  entries.splice(index, 1);
+  res.status(204).send();
 });
 
 app.use(express.static('public'));
