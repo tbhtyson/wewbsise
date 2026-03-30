@@ -6,6 +6,14 @@ const COUNTER_FILE = './count.json';
 const GUESTS_FILE = './guest.json';
 const bcrypt = require('bcrypt');
 const HASHED_PASSWORD = '$2b$10$uVvt0wxUvf56LvAPgqjkD.ucYrpIXEw5qGjze.sDjQfOQ1aex2Lym'; // paste your hash here
+app.use(cors({
+  origin: 'https://username.neocities.org', // ← exact value from step 1
+  methods: ['GET', 'POST', 'DELETE'],
+  allowedHeaders: ['Content-Type'],
+}));
+
+// Explicitly handle preflight OPTIONS requests
+app.options('*', cors());
 // make file if nonexistent
 if (!fs.existsSync(GUESTS_FILE)) {
   fs.writeFileSync(GUESTS_FILE, '[]');
@@ -47,12 +55,6 @@ const express = require('express');
 
 const app = express();
 const PORT = 3000;
-app.use(cors({
-  origin: (origin, callback) => {
-      callback(null, true);
-  },
-  methods: ['GET', 'POST', 'DELETE'],
-}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
