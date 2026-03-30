@@ -47,7 +47,12 @@ const express = require('express');
 
 const app = express();
 const PORT = 3000;
-app.use(cors()); // no config = allow everyone
+app.use(cors({
+  origin: (origin, callback) => {
+      callback(null, true);
+  },
+  methods: ['GET', 'POST', 'DELETE'],
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
