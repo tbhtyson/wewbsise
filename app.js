@@ -47,13 +47,22 @@ function writeEntries(entries) {
 const express = require('express');
 
 const app = express();
-app.use(cors({
-  origin: 'https://username.neocities.org', // ← exact value from step 1
+const corsOptions = {
+  origin: 'https://tbhtyson.neocities.org',
   methods: ['GET', 'POST', 'DELETE'],
   allowedHeaders: ['Content-Type'],
-}));
+};
 
-app.options('*', cors());
+app.use(cors(corsOptions));
+app.use((req, res, next) => {
+  if (req.method === 'OPTIONS') {
+    res.header('Access-Control-Allow-Origin', 'https://username.neocities.org');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, DELETE');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+    return res.status(204).send();
+  }
+  next();
+});
 const PORT = 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
