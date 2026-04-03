@@ -11,6 +11,8 @@ grid-template-columns: 250px 750px 250px;
 word-wrap: break-word;
 }
 
+
+
 header {
 grid-row: 1 / 2;
 grid-column: 2 / 3;
@@ -41,6 +43,11 @@ height: max-content;
 grid-row: 2 / 8;
 grid-column: 3 / 4;
 text-align: center;
+width: 250px;
+}
+
+.side {
+width: 240px;
 }
 
 
