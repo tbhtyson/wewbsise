@@ -1,5 +1,6 @@
 nav, main, .entry, footer {
-border: pink 5px solid;
+border: #ffc0f4 5px solid;
+background-color: #ffd5c0;
 }
 
 .box {
@@ -46,11 +47,8 @@ text-align: center;
 width: 250px;
 }
 
-.side {
-width: 240px;
-}
 
 
 body {
-background-color: paleturquoise;
+background-color: #ffdfc0;
 }
