@@ -1,49 +1,64 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <title>Tbhtyson&apos;s supa mega cool website!</title>
 
-    <link rel='stylesheet' href='style.css'>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div class='box'>
-      <header class='object'>
+    <div class="box">
+      <header class="object">
         <h1>tbhtyson&apos;s stuff</h1>
       </header>
-      <nav class='side'><h3>links I like/links to navigate</h3>
+      <nav class="side">
+        <h3>links I like/links to navigate</h3>
         <ol>
-          <li><a href='https://www.kamtape.com/profile?user=tbhtyson'>kamtape profile</a></li>
-          <li><a href='https://youtube.com/@tbhtyson'>youtube channel</a></li>
-          <li><a href='https://spacehey.com/profile?id=4263394'>spacehey</a></li>
-          <li><a href='https://www.youtube.com/@ShadowCatKitty124'>a friend&apos;s yt channel</a></li>
-          <li><a href='https://scftst4rs.neocities.org/'>a cool &lt;1k sub yt channel</a></li>
+          <li><a href="https://www.kamtape.com/profile?user=tbhtyson">kamtape profile</a></li>
+          <li><a href="https://youtube.com/@tbhtyson">youtube channel</a></li>
+          <li><a href="https://spacehey.com/profile?id=4263394">spacehey</a></li>
+          <li><a href="https://www.youtube.com/@ShadowCatKitty124">a friend&apos;s yt channel</a></li>
+          <li><a href="https://scftst4rs.neocities.org/">a cool &lt;1k sub yt channel</a></li>
         </ol>
       </nav>
 
-      <main class='object'>
-        Hello! Tbhtyson here. I'm a &quot;web dev&quot; who thinks linux is cool, age verification is bad, more people should have websites, and that the internet can be great if we all try. I use arch linux, kde plasma, and neovim. I have a luanti server here if ya want to try it. This site is also hosted on yggdrasil network for those sorts of people.
+      <main class="object">
+        Hello! Tbhtyson here. I'm a &quot;web dev&quot; who thinks linux is cool, age verification is bad, more people
+        should have websites, and that the internet can be great if we all try. I use arch linux, kde plasma, and
+        neovim. I have a luanti server here if ya want to try it. This site is also hosted on yggdrasil network for
+        those sorts of people.
       </main>
 
-      <footer class='object'>
-        Last update 3/29/2026 at 2:23 CST, views: <span id='view-count'></span>
+      <footer class="object">
+        Last update 3/29/2026 at 2:23 CST, views:
+        <span id="view-count"></span>
       </footer>
-      <div class='guestbookstuff side'>
-        <div class='card'>
-          <form id='guestbook-form'>
+
+      <div class="guestbookstuff side">
+        <div class="card">
+          <form id="guestbook-form">
+              <div class="field">
+                <label for="name">Your Name</label>
+                <input type="text" id="name" placeholder="Jane Doe" maxlength="100" required />
+                <div class="char-count">
+                  <span id="name-count">0</span>
+                  /100
+                </div>
+            </div>
+
             <div class="field">
-              <label for="name">Your Name</label>
-              <input type="text" id="name" placeholder="Jane Doe" maxlength="100" required />
-              <div class="char-count"><span id="name-count">0</span>/100</div>
+                <label for="message">Message</label>
+                <textarea id="message" rows="3" placeholder="Say something nice…" maxlength="500" required></textarea>
+                <div class="char-count">
+                  <span id="msg-count">0</span>
+                  /500
+                </div>
             </div>
-            <div class='field'>
-              <label for="message">Message</label>
-              <textarea id="message" rows="3" placeholder="Say something nice…" maxlength="500" required></textarea>
-              <div class="char-count"><span id="msg-count">0</span>/500</div>
-            </div>
+
             <button type="submit" id="submit-btn">Sign Guestbook!</button>
             <div class="toast" id="toast"></div>
           </form>
         </div>
+
         <section id="entries-section">
           <h4 id="entries-heading">Entries</h4>
           <div id="loading">Loading entries…</div>
@@ -51,136 +66,142 @@
         </section>
       </div>
     </div>
+
     <script>
       async function loadViews() {
-        const res = await fetch('/api/views');
+        const res = await fetch("/api/views");
         const { views } = await res.json();
-        document.getElementById('view-count').textContent = views;
+        document.getElementById("view-count").textContent = views;
       }
-      
+
       loadViews();
 
-        const API = "/api/entries";
- 
-  // ── Char counters ──────────────────────────────────────────────────────────
-  document.getElementById("name").addEventListener("input", e => {
-    document.getElementById("name-count").textContent = e.target.value.length;
-  });
-  document.getElementById("message").addEventListener("input", e => {
-    document.getElementById("msg-count").textContent = e.target.value.length;
-  });
- 
-  // ── Helpers ───────────────────────────────────────────────────────────────
-  function showToast(msg, type = "success") {
-    const t = document.getElementById("toast");
-    t.textContent = msg;
-    t.className = `toast ${type}`;
-    setTimeout(() => { t.className = "toast"; }, 3500);
-  }
- 
-  function formatDate(iso) {
-    return new Date(iso).toLocaleDateString("en-US", {
-      year: "numeric", month: "short", day: "numeric",
-    });
-  }
- 
-  // ── Render entries ─────────────────────────────────────────────────────────
-  function renderEntries(entries) {
-    const list = document.getElementById("entries-list");
-    document.getElementById("entries-heading").textContent =
-      `Entries (${entries.length})`;
- 
-    if (entries.length === 0) {
-      list.innerHTML = '<p class="empty">No entries yet. Be the first! 🎉</p>';
-      return;
-    }
- 
-    list.innerHTML = entries.map(e => `
+      const API = "/api/entries";
+
+      // ── Char counters ──────────────────────────────────────────────────────────
+      document.getElementById("name").addEventListener("input", (e) => {
+        document.getElementById("name-count").textContent = e.target.value.length;
+      });
+      document.getElementById("message").addEventListener("input", (e) => {
+        document.getElementById("msg-count").textContent = e.target.value.length;
+      });
+
+      // ── Helpers ───────────────────────────────────────────────────────────────
+      function showToast(msg, type = "success") {
+        const t = document.getElementById("toast");
+        t.textContent = msg;
+        t.className = `toast ${type}`;
+        setTimeout(() => {
+          t.className = "toast";
+        }, 3500);
+      }
+
+      function formatDate(iso) {
+        return new Date(iso).toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        });
+      }
+
+      // ── Render entries ─────────────────────────────────────────────────────────
+      function renderEntries(entries) {
+        const list = document.getElementById("entries-list");
+        document.getElementById("entries-heading").textContent = `Entries (${entries.length})`;
+
+        if (entries.length === 0) {
+          list.innerHTML = '<p class="empty">No entries yet. Be the first! 🎉</p>';
+          return;
+        }
+
+        list.innerHTML = entries
+          .map(
+            (e) => `
       <div class="entry" id="entry-${e.id}">
         <span class="entry-name">${escHtml(e.name)}</span>
         <span class="entry-date">${formatDate(e.date)}</span>
         <button class="delete-btn" onclick="deleteEntry(${e.id})" title="Delete">✕</button>
         <p class="entry-msg">${escHtml(e.message)}</p>
       </div>
-    `).join("");
-  }
- 
-  function escHtml(str) {
-    return str.replace(/&/g,"&amp;").replace(/</g,"&lt;")
-              .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
-  }
- 
-  // ── Fetch entries ──────────────────────────────────────────────────────────
-  async function loadEntries() {
-    try {
-      const res = await fetch(API);
-      const data = await res.json();
-      document.getElementById("loading").style.display = "none";
-      renderEntries(data);
-    } catch {
-      document.getElementById("loading").textContent = "Failed to load entries.";
-    }
-  }
- 
-  // ── Submit form ────────────────────────────────────────────────────────────
-  document.getElementById("guestbook-form").addEventListener("submit", async e => {
-    e.preventDefault();
-    const btn  = document.getElementById("submit-btn");
-    const name = document.getElementById("name").value.trim();
-    const msg  = document.getElementById("message").value.trim();
- 
-    btn.disabled = true;
-    btn.textContent = "Signing…";
- 
-    try {
-      const res = await fetch(API, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, message: msg }),
-      });
-      const data = await res.json();
- 
-      if (!res.ok) throw new Error(data.error || "Something went wrong.");
- 
-      showToast("Your message was added! 🎉");
-      e.target.reset();
-      document.getElementById("name-count").textContent = "0";
-      document.getElementById("msg-count").textContent  = "0";
-      loadEntries();
-    } catch (err) {
-      showToast(err.message, "error");
-    } finally {
-      btn.disabled = false;
-      btn.textContent = "Sign Guestbook ✍️";
-    }
-  });
- 
-  // ── Delete entry ───────────────────────────────────────────────────────────
-  async function deleteEntry(id) {
-    const password = prompt('Enter password to delete this entry:');
-  if (!password) return;
-
-  const res = await fetch(`/api/entries/${id}`, {
-    method: 'DELETE',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ password }),
-  });
-
-  if (res.status === 401) {
-    alert('Incorrect password.');
-    return;
-  }
-  if (!res.ok) {
-    alert('Failed to delete entry.');
-    return;
-  }
-
-  loadEntries();
+    `,
+          )
+          .join("");
       }
- 
-  // ── Init ───────────────────────────────────────────────────────────────────
-  loadEntries();
-    </script>
 
+      function escHtml(str) {
+        return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+      }
+
+      // ── Fetch entries ──────────────────────────────────────────────────────────
+      async function loadEntries() {
+        try {
+          const res = await fetch(API);
+          const data = await res.json();
+          document.getElementById("loading").style.display = "none";
+          renderEntries(data);
+        } catch {
+          document.getElementById("loading").textContent = "Failed to load entries.";
+        }
+      }
+
+      // ── Submit form ────────────────────────────────────────────────────────────
+      document.getElementById("guestbook-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById("submit-btn");
+        const name = document.getElementById("name").value.trim();
+        const msg = document.getElementById("message").value.trim();
+
+        btn.disabled = true;
+        btn.textContent = "Signing…";
+
+        try {
+          const res = await fetch(API, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, message: msg }),
+          });
+          const data = await res.json();
+
+          if (!res.ok) throw new Error(data.error || "Something went wrong.");
+
+          showToast("Your message was added! 🎉");
+          e.target.reset();
+          document.getElementById("name-count").textContent = "0";
+          document.getElementById("msg-count").textContent = "0";
+          loadEntries();
+        } catch (err) {
+          showToast(err.message, "error");
+        } finally {
+          btn.disabled = false;
+          btn.textContent = "Sign Guestbook ✍️";
+        }
+      });
+
+      // ── Delete entry ───────────────────────────────────────────────────────────
+      async function deleteEntry(id) {
+        const password = prompt("Enter password to delete this entry:");
+        if (!password) return;
+
+        const res = await fetch(`/api/entries/${id}`, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ password }),
+        });
+
+        if (res.status === 401) {
+          alert("Incorrect password.");
+          return;
+        }
+        if (!res.ok) {
+          alert("Failed to delete entry.");
+          return;
+        }
+
+        loadEntries();
+      }
+
+      // ── Init ───────────────────────────────────────────────────────────────────
+      loadEntries();
+    </script>
   </body>
 </html>
